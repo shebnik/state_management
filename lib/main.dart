@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:state_management/models/cart.dart';
-import 'package:state_management/models/catalog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:state_management/ui/cart.dart';
 import 'package:state_management/ui/catalog.dart';
 
@@ -14,18 +12,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider(create: (context) => CatalogModel()),
-        ChangeNotifierProxyProvider<CatalogModel, CartModel>(
-          create: (context) => CartModel(),
-          update: (context, catalog, cart) {
-            if (cart == null) throw ArgumentError.notNull('cart');
-            cart.catalog = catalog;
-            return cart;
-          },
-        ),
-      ],
+    return ProviderScope(
       child: MaterialApp(
         title: 'e-commerce',
         initialRoute: '/',

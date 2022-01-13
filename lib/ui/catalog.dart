@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:state_management/models/cart.dart';
-import 'package:state_management/models/catalog.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:state_management/models/item.dart';
+import 'package:state_management/providers/state_provider.dart';
 
-class MyCatalog extends StatelessWidget {
+class MyCatalog extends ConsumerWidget {
   const MyCatalog({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final catalog = ref.watch(catalogProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Каталог'),
@@ -21,7 +22,7 @@ class MyCatalog extends StatelessWidget {
       body: SingleChildScrollView(
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: 10,
+          itemCount: catalog.length,
           itemBuilder: (context, index) => _ListItem(index),
         ),
       ),
@@ -29,23 +30,23 @@ class MyCatalog extends StatelessWidget {
   }
 }
 
-class _AddButton extends StatelessWidget {
+class _AddButton extends ConsumerWidget {
   final Item item;
 
   const _AddButton({required this.item, Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var isInCart = context.select<CartModel, bool>(
-      (cart) => cart.items.contains(item),
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cart = ref.watch(cartProvider);
+    final cartController = ref.watch(cartProvider.notifier);
+
+    bool isInCart = cart.contains(item);
 
     return TextButton(
       onPressed: isInCart
           ? null
           : () {
-              var cart = context.read<CartModel>();
-              cart.add(item);
+              cartController.add(item);
             },
       style: ButtonStyle(
         overlayColor: MaterialStateProperty.resolveWith<Color?>((states) {
@@ -62,16 +63,20 @@ class _AddButton extends StatelessWidget {
   }
 }
 
-class _ListItem extends StatelessWidget {
+class _ListItem extends ConsumerWidget {
   final int index;
 
   const _ListItem(this.index, {Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var item = context.select<CatalogModel, Item>(
-      (catalog) => catalog.getByPosition(index),
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final catalog = ref.watch(catalogProvider);
+    final catalogController = ref.watch(catalogProvider.notifier);
+
+    final cart = ref.watch(cartProvider);
+    final cartController = ref.watch(cartProvider.notifier);
+
+    var item = catalogController.getById(index);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:state_management/models/cart.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:state_management/providers/state_provider.dart';
 
-class MyCart extends StatelessWidget {
+class MyCart extends ConsumerWidget {
   const MyCart({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cart = ref.watch(cartProvider);
+    final cartController = ref.watch(cartProvider.notifier);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Корзина'),
@@ -20,11 +22,9 @@ class MyCart extends StatelessWidget {
           SizedBox(
             height: 200,
             child: Center(
-              child: Consumer<CartModel>(
-                builder: (context, cart, child) => Text(
-                  'Итого: ${cart.totalPrice} грн',
-                  style: const TextStyle(fontSize: 50),
-                ),
+              child: Text(
+                'Итого: ${cartController.totalPrice} грн',
+                style: const TextStyle(fontSize: 50),
               ),
             ),
           ),
@@ -34,28 +34,32 @@ class MyCart extends StatelessWidget {
   }
 }
 
-class _CartList extends StatelessWidget {
+class _CartList extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    var cart = context.watch<CartModel>();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final cart = ref.watch(cartProvider);
+    final cartController = ref.watch(cartProvider.notifier);
 
     return ListView.builder(
-      itemCount: cart.items.length,
-      itemBuilder: (context, index) => ListTile(
-        leading: const Icon(
-          Icons.done,
-          color: Colors.green,
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.remove_circle_outline),
-          onPressed: () {
-            cart.remove(cart.items[index]);
-          },
-        ),
-        title: Text(
-          '${cart.items[index].name} - ${cart.items[index].price} грн.',
-        ),
-      ),
+      itemCount: cart.length,
+      itemBuilder: (context, index) {
+        final cartItem = cart[index];
+        return ListTile(
+          leading: const Icon(
+            Icons.done,
+            color: Colors.green,
+          ),
+          trailing: IconButton(
+            icon: const Icon(Icons.remove_circle_outline),
+            onPressed: () {
+              cartController.remove(cartItem);
+            },
+          ),
+          title: Text(
+            '${cartItem.name} - ${cartItem.price} грн.',
+          ),
+        );
+      },
     );
   }
 }
