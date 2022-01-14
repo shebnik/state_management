@@ -21,7 +21,7 @@ class MyCatalog extends StatelessWidget {
       body: SingleChildScrollView(
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: 10,
+          itemCount: CatalogModel.items.length,
           itemBuilder: (context, index) => _ListItem(index),
         ),
       ),
