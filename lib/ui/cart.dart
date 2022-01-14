@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:state_management/blocs/cart_bloc.dart';
-import 'package:state_management/events/events.dart';
+import 'package:state_management/cubits/cart_bloc.dart';
 import 'package:state_management/models/state/cart_state.dart';
 
 class MyCart extends StatelessWidget {
@@ -9,7 +8,7 @@ class MyCart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartBloc, CartState>(
+    return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
         double totalPrice =
             state.cart.fold(0, (total, current) => total + current.price);
@@ -44,7 +43,7 @@ class MyCart extends StatelessWidget {
 class _CartList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartBloc, CartState>(
+    return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
         return ListView.builder(
           itemCount: state.cart.length,
@@ -58,7 +57,7 @@ class _CartList extends StatelessWidget {
               trailing: IconButton(
                 icon: const Icon(Icons.remove_circle_outline),
                 onPressed: () {
-                  context.read<CartBloc>().add(RemoveFromCartEvent(cartItem));
+                  context.read<CartCubit>().removeFromCart(cartItem);
                 },
               ),
               title: Text(

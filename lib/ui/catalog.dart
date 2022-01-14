@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:state_management/blocs/cart_bloc.dart';
-import 'package:state_management/blocs/catalog_bloc.dart';
-import 'package:state_management/events/events.dart';
+import 'package:state_management/cubits/cart_bloc.dart';
+import 'package:state_management/cubits/catalog_bloc.dart';
 import 'package:state_management/models/item.dart';
 import 'package:state_management/models/state/cart_state.dart';
 import 'package:state_management/models/state/catalog_state.dart';
@@ -13,7 +12,7 @@ class MyCatalog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CatalogBloc, CatalogState>(
+    return BlocBuilder<CatalogCubit, CatalogState>(
       builder: (context, state) {
         if (state.isLoading) {
           return const LoadingIndicator();
@@ -48,14 +47,14 @@ class _AddButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartBloc, CartState>(
+    return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
         bool isInCart = state.cart.contains(item);
         return TextButton(
           onPressed: isInCart
               ? null
               : () {
-                  context.read<CartBloc>().add(AddToCartEvent(item));
+                  context.read<CartCubit>().addToCart(item);
                 },
           style: ButtonStyle(
             overlayColor: MaterialStateProperty.resolveWith<Color?>((states) {
@@ -81,7 +80,7 @@ class _ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CatalogBloc, CatalogState>(
+    return BlocBuilder<CatalogCubit, CatalogState>(
       builder: (context, state) {
         var item = state.catalog[index];
         return Padding(
