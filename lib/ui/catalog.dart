@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:state_management/models/item.dart';
 import 'package:state_management/providers/state_provider.dart';
 
@@ -8,7 +8,7 @@ class MyCatalog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final catalog = ref.watch(catalogProvider);
+    final catalog = ref.watch(listedCatalogProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Каталог'),
@@ -37,7 +37,7 @@ class _AddButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cart = ref.watch(cartProvider);
+    final cart = ref.watch(listedCartProvider);
     final cartController = ref.watch(cartProvider.notifier);
 
     bool isInCart = cart.contains(item);
@@ -70,11 +70,7 @@ class _ListItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final catalog = ref.watch(catalogProvider);
     final catalogController = ref.watch(catalogProvider.notifier);
-
-    final cart = ref.watch(cartProvider);
-    final cartController = ref.watch(cartProvider.notifier);
 
     var item = catalogController.getById(index);
 

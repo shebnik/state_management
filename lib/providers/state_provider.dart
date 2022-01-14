@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:state_management/models/item.dart';
 import 'package:state_management/notifiers/notifiers.dart';
 import 'package:state_management/repository/catalog_repository.dart';

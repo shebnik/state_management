@@ -19,18 +19,11 @@ class CatalogNotifier extends StateNotifier<List<Item>> {
 class CartNotifier extends StateNotifier<List<Item>> {
   CartNotifier() : super([]);
 
-  double totalPrice = 0;
-
-  void updateTotalPrice() =>
-      totalPrice = state.fold(0, (total, current) => total + current.price);
-
   void add(Item item) {
     state = [...state, item];
-    updateTotalPrice();
   }
 
   void remove(Item item) {
     state = state.where((element) => element.id != item.id).toList();
-    updateTotalPrice();
   }
 }
