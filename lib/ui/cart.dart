@@ -8,7 +8,8 @@ class MyCart extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cart = ref.watch(cartProvider);
-    final cartController = ref.watch(cartProvider.notifier);
+    double totalPrice = cart.fold(0, (total, current) => total + current.price);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Корзина'),
@@ -23,7 +24,7 @@ class MyCart extends ConsumerWidget {
             height: 200,
             child: Center(
               child: Text(
-                'Итого: ${cartController.totalPrice} грн',
+                'Итого: $totalPrice грн',
                 style: const TextStyle(fontSize: 50),
               ),
             ),

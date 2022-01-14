@@ -12,7 +12,3 @@ final catalogProvider = StateNotifierProvider<CatalogNotifier, List<Item>>(
 final cartProvider = StateNotifierProvider<CartNotifier, List<Item>>(
   (_) => CartNotifier(),
 );
-
-
-final listedCatalogProvider = Provider((ref) => ref.watch(catalogProvider));
-final listedCartProvider = Provider((ref) => ref.watch(cartProvider));

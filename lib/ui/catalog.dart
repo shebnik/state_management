@@ -70,11 +70,7 @@ class _ListItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final catalog = ref.watch(catalogProvider);
     final catalogController = ref.watch(catalogProvider.notifier);
-
-    final cart = ref.watch(cartProvider);
-    final cartController = ref.watch(cartProvider.notifier);
 
     var item = catalogController.getById(index);
 
