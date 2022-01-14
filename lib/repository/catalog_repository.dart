@@ -3,15 +3,15 @@ import 'package:state_management/models/item.dart';
 abstract class CatalogRepository {
   const CatalogRepository();
 
-  List<Item> loadItems();
-  
+  Future<List<Item>> loadItems();
+
   Item getById(int id);
 }
 
 class ConstCatalogRepository extends CatalogRepository {
   const ConstCatalogRepository();
 
-  static const _items = <Item>[
+  static const _allItems = <Item>[
     Item(0, 'Яблоко', 22),
     Item(1, 'Апельсин', 34),
     Item(2, 'Банан', 33),
@@ -25,8 +25,10 @@ class ConstCatalogRepository extends CatalogRepository {
   ];
 
   @override
-  List<Item> loadItems() => _items;
+  Future<List<Item>> loadItems() async {
+    return _allItems;
+  }
 
   @override
-  Item getById(int id) => _items.firstWhere((element) => element.id == id);
+  Item getById(int id) => _allItems.firstWhere((element) => element.id == id);
 }

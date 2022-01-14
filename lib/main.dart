@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:state_management/blocs/cart_bloc.dart';
+import 'package:state_management/blocs/catalog_bloc.dart';
+import 'package:state_management/events/events.dart';
+import 'package:state_management/repository/catalog_repository.dart';
 import 'package:state_management/ui/cart.dart';
 import 'package:state_management/ui/catalog.dart';
 
@@ -12,7 +16,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderScope(
+    const catalogRepo = ConstCatalogRepository();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CatalogBloc>(
+          create: (_) => CatalogBloc(catalogRepo)..add(LoadCatalogEvent()),
+        ),
+        BlocProvider<CartBloc>(
+          create: (_) => CartBloc(),
+        ),
+      ],
       child: MaterialApp(
         title: 'e-commerce',
         initialRoute: '/',
