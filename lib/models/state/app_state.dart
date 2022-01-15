@@ -1,26 +1,31 @@
 import 'package:state_management/models/app_page.dart';
-import 'package:state_management/models/state/cart_state.dart';
-import 'package:state_management/models/state/catalog_state.dart';
+import 'package:state_management/models/item.dart';
 
 class AppState {
-  final CatalogState catalogState;
-  final CartState cartState;
+  final bool isLoading;
+  final List<Item> catalog;
+  final List<Item> cart;
   final AppPage activePage;
 
   const AppState({
-    this.catalogState = const CatalogState(),
-    this.cartState = const CartState(),
+    this.catalog = const [],
+    this.cart = const [],
+    this.isLoading = false,
     this.activePage = AppPage.catalog,
   });
 
+  factory AppState.loading() => const AppState(isLoading: true);  
+
   AppState copyWith({
-    CatalogState? catalogState,
-    CartState? cartState,
+    bool? isLoading,
+    List<Item>? catalog,
+    List<Item>? cart,
     AppPage? activePage,
   }) {
     return AppState(
-      catalogState: catalogState ?? this.catalogState,
-      cartState: cartState ?? this.cartState,
+      isLoading: isLoading ?? this.isLoading,
+      catalog: catalog ?? this.catalog,
+      cart: cart ?? this.cart,
       activePage: activePage ?? this.activePage,
     );
   }

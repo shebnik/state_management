@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:state_management/blocs/cart_bloc.dart';
-import 'package:state_management/blocs/catalog_bloc.dart';
-import 'package:state_management/blocs/ui_bloc.dart';
-import 'package:state_management/repository/catalog_repository.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import 'package:state_management/actions/actions.dart';
+import 'package:state_management/reducers/app_state_reducer.dart';
 import 'package:state_management/ui/home_screen.dart';
+import 'package:state_management/middleware/store_middleware.dart';
+import 'package:state_management/models/state/app_state.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,18 +16,28 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const catalogRepo = ConstCatalogRepository();
+    final store = Store<AppState>(
+      appReducer,
+      initialState: AppState.loading(),
+      middleware: createStoreMiddleware(),
+    );
 
-    final catalogBloc = CatalogBloc(catalogRepo);
-    final cartBloc = CartBloc();
-
-    return MaterialApp(
-      title: 'e-commerce',
-      home: HomeScreen(
-        blocBuilder: () =>
-            UiBloc(catalogBloc: catalogBloc, cartBloc: cartBloc),
+    return StoreProvider<AppState>(
+      store: store,
+      child: MaterialApp(
+        title: 'e-commerce',
+        routes: {
+          "/": (context) {
+            return HomeScreen(
+              onInit: () {
+                StoreProvider.of<AppState>(context)
+                    .dispatch(LoadCatalogAction());
+              },
+            );
+          },
+        },
+        debugShowCheckedModeBanner: false,
       ),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

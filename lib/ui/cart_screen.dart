@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
-
 import 'package:state_management/models/item.dart';
-import 'package:state_management/models/state/cart_state.dart';
 
-class MyCart extends StatelessWidget {
-  final CartState cartState;
-  final void Function(Item) removeFromCart;
+class CartScreen extends StatelessWidget {
+
+  final List<Item> cart;
   final VoidCallback showCatalog;
+  final void Function(Item) removeFromCart;
 
-  const MyCart({
+  const CartScreen({
     Key? key,
-    required this.cartState,
-    required this.removeFromCart,
+    required this.cart,
     required this.showCatalog,
+    required this.removeFromCart,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    double totalPrice =
-        cartState.cart.fold(0, (total, current) => total + current.price);
+    double totalPrice = cart.fold(0, (total, current) => total + current.price);
 
     return Scaffold(
       appBar: AppBar(
@@ -32,7 +30,7 @@ class MyCart extends StatelessWidget {
         children: [
           Expanded(
             child: _CartList(
-              cart: cartState.cart,
+              cart: cart,
               removeFromCart: removeFromCart,
             ),
           ),

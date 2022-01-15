@@ -1,29 +1,21 @@
 import 'package:flutter/material.dart';
-
 import 'package:state_management/models/item.dart';
-import 'package:state_management/models/state/cart_state.dart';
-import 'package:state_management/models/state/catalog_state.dart';
-import 'package:state_management/widgets/loading_indicator.dart';
 
-class MyCatalog extends StatelessWidget {
-  final CatalogState catalogState;
-  final CartState cartState;
+class CatalogScreen extends StatelessWidget {
+  final List<Item> cart, catalog;
   final void Function(Item) addToCart;
   final VoidCallback openCart;
 
-  const MyCatalog({
+  const CatalogScreen({
     Key? key,
-    required this.catalogState,
-    required this.cartState,
+    required this.catalog,
+    required this.cart,
     required this.addToCart,
     required this.openCart,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (catalogState.isLoading) {
-      return const LoadingIndicator();
-    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Каталог'),
@@ -37,10 +29,10 @@ class MyCatalog extends StatelessWidget {
       body: SingleChildScrollView(
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: catalogState.catalog.length,
+          itemCount: catalog.length,
           itemBuilder: (context, index) => _ListItem(
-            item: catalogState.catalog[index],
-            cartState: cartState,
+            item: catalog[index],
+            cart: cart,
             addToCart: addToCart,
           ),
         ),
@@ -51,19 +43,19 @@ class MyCatalog extends StatelessWidget {
 
 class _AddButton extends StatelessWidget {
   final Item item;
-  final CartState cartState;
+  final List<Item> cart;
   final void Function(Item) addToCart;
 
   const _AddButton({
     Key? key,
     required this.item,
-    required this.cartState,
+    required this.cart,
     required this.addToCart,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    bool isInCart = cartState.cart.contains(item);
+    bool isInCart = cart.contains(item);
     return TextButton(
       onPressed: isInCart
           ? null
@@ -87,13 +79,13 @@ class _AddButton extends StatelessWidget {
 
 class _ListItem extends StatelessWidget {
   final Item item;
-  final CartState cartState;
+  final List<Item> cart;
   final void Function(Item) addToCart;
 
   const _ListItem({
     Key? key,
     required this.item,
-    required this.cartState,
+    required this.cart,
     required this.addToCart,
   }) : super(key: key);
 
@@ -116,7 +108,7 @@ class _ListItem extends StatelessWidget {
             const SizedBox(width: 24),
             _AddButton(
               item: item,
-              cartState: cartState,
+              cart: cart,
               addToCart: addToCart,
             ),
           ],
