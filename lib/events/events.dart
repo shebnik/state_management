@@ -1,3 +1,4 @@
+import 'package:state_management/models/app_page.dart';
 import 'package:state_management/models/item.dart';
 
 abstract class Event {}
@@ -18,4 +19,10 @@ class RemoveFromCartEvent extends CartEvent {
   final Item item;
 
   RemoveFromCartEvent(this.item);
+}
+
+class UpdatePageEvent extends Event {
+  final AppPage newPage;
+
+  UpdatePageEvent(this.newPage);
 }

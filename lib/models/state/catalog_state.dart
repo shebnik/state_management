@@ -19,4 +19,7 @@ class CatalogState {
       isLoading: isLoading ?? this.isLoading,
     );
   }
+
+  @override
+  String toString() => 'CatalogState(catalog: $catalog, isLoading: $isLoading)';
 }

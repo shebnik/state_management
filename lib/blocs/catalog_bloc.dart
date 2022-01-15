@@ -1,22 +1,38 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'dart:async';
+
 import 'package:state_management/events/events.dart';
 import 'package:state_management/models/state/catalog_state.dart';
 import 'package:state_management/repository/catalog_repository.dart';
 
-class CatalogBloc extends Bloc<Event, CatalogState> {
+class CatalogBloc {
   final CatalogRepository _catalogRepository;
 
-  CatalogBloc(this._catalogRepository) : super(const CatalogState());
+  var _currentState = const CatalogState();
 
-  @override
-  Stream<CatalogState> mapEventToState(Event event) async* {
+  final _stateController = StreamController<CatalogState>();
+  final _eventsController = StreamController<Event>();
+
+  Stream<CatalogState> get state => _stateController.stream;
+  Sink<Event> get event => _eventsController.sink;
+
+  CatalogBloc(this._catalogRepository) {
+    _eventsController.stream.listen(_handleEvent);
+  }
+  
+  void dispose() {
+    _stateController.close();
+    _eventsController.close();
+  }
+
+  void _handleEvent(Event event) async {
     if (event is LoadCatalogEvent) {
       try {
         final list = await _catalogRepository.loadItems();
-        yield state.copyWith(catalog: list, isLoading: false);
+        _currentState = _currentState.copyWith(catalog: list, isLoading: false);
       } on Exception {
-        yield state.copyWith(catalog: [], isLoading: false);
+        _currentState = _currentState.copyWith(catalog: [], isLoading: false);
       }
     }
+    _stateController.add(_currentState);
   }
 }

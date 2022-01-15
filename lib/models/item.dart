@@ -13,4 +13,7 @@ class Item {
 
   @override
   bool operator ==(Object other) => other is Item && other.id == id;
+
+  @override
+  String toString() => 'Item(id: $id, name: $name, price: $price)';
 }

@@ -9,10 +9,12 @@ class CartState {
 
   CartState copyWith({
     List<Item>? cart,
-    Item? item,
   }) {
     return CartState(
       cart: cart ?? this.cart,
     );
   }
+
+  @override
+  String toString() => 'CartState(cart: $cart)';
 }
