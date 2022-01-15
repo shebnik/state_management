@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
-import 'package:state_management/actions/actions.dart';
-import 'package:state_management/reducers/app_state_reducer.dart';
-import 'package:state_management/ui/home_screen.dart';
-import 'package:state_management/middleware/store_middleware.dart';
-import 'package:state_management/models/state/app_state.dart';
+import 'package:provider/provider.dart';
+import 'package:state_management/observables/commerce_observable.dart';
+import 'package:state_management/repository/catalog_repository.dart';
+import 'package:state_management/ui/cart.dart';
+import 'package:state_management/ui/catalog_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,25 +14,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final store = Store<AppState>(
-      appReducer,
-      initialState: AppState.loading(),
-      middleware: createStoreMiddleware(),
-    );
-
-    return StoreProvider<AppState>(
-      store: store,
+    return MultiProvider(
+        providers: [
+          Provider(
+            create: (context) => CommerceState(const ConstCatalogRepository()),
+          )
+        ],
       child: MaterialApp(
         title: 'e-commerce',
+        initialRoute: '/',
         routes: {
-          "/": (context) {
-            return HomeScreen(
-              onInit: () {
-                StoreProvider.of<AppState>(context)
-                    .dispatch(LoadCatalogAction());
-              },
-            );
-          },
+          '/': (context) => const MyCatalog(),
+          '/cart': (context) => const MyCart(),
         },
         debugShowCheckedModeBanner: false,
       ),
